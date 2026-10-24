@@ -13,7 +13,7 @@
         .screen { flex: 1; display: none; overflow-y: auto; padding-bottom: 70px; height: calc(100vh - 120px); }
         .screen.active { display: block; }
         
-        #map { height: 50vh; width: 100%; min-height: 300px; background: #e0eced; }
+        #map { height: 50vh; width: 100%; min-height: 300px; background: #ccd7d9; }
         
         .section-title { font-size: 22px; font-weight: bold; padding: 20px 15px 10px 15px; margin: 0; color: #111; }
         .search-bar { margin: 10px 15px; padding: 12px; background: #eee; border-radius: 10px; color: #777; font-size: 14px; }
@@ -134,8 +134,12 @@
         function initMap() {
             if (!map) {
                 map = L.map('map').setView([25.2, -79.5], 6);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
+                
+                // Переключаем на сверхустойчивый слой CartoDB Voyager
+                L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
+                    attribution: '© OpenStreetMap © CartoDB',
+                    subdomains: 'abcd',
+                    maxZoom: 20
                 }).addTo(map);
 
                 var animals = [
@@ -152,7 +156,6 @@
             }
         }
 
-        // Запуск при старте
         window.onload = function() {
             initMap();
         };
@@ -170,4 +173,3 @@
     </script>
 </body>
 </html>
-
