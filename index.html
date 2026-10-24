@@ -10,10 +10,10 @@
         header { background: white; color: #333; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; border-bottom: 1px solid #eee; display: flex; justify-content: center; align-items: center; gap: 8px; }
         header span { color: #028090; }
         
-        .screen { flex: 1; display: none; overflow-y: auto; padding-bottom: 70px; }
+        .screen { flex: 1; display: none; overflow-y: auto; padding-bottom: 70px; height: calc(100vh - 120px); }
         .screen.active { display: block; }
         
-        #map { height: 50vh; width: 100%; }
+        #map { height: 50vh; width: 100%; min-height: 300px; background: #e0eced; }
         
         .section-title { font-size: 22px; font-weight: bold; padding: 20px 15px 10px 15px; margin: 0; color: #111; }
         .search-bar { margin: 10px 15px; padding: 12px; background: #eee; border-radius: 10px; color: #777; font-size: 14px; }
@@ -129,28 +129,45 @@
 
     <script src="https://unpkg.com"></script>
     <script>
-        var map = L.map('map').setView([25.2, -79.5], 6);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        var map;
+        
+        function initMap() {
+            if (!map) {
+                map = L.map('map').setView([25.2, -79.5], 6);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
 
-        var animals = [
-            { name: "Alpha (Кит)", lat: 25.76, lng: -80.19, info: "Humpback Whale • Active" },
-            { name: "Echo (Дельфин)", lat: 25.03, lng: -77.39, info: "Bottlenose Dolphin • Active" },
-            { name: "Catalina (Акула)", lat: 24.55, lng: -81.78, info: "Great White Shark • PRO" }
-        ];
+                var animals = [
+                    { name: "Alpha (Кит)", lat: 25.76, lng: -80.19, info: "Humpback Whale • Active" },
+                    { name: "Echo (Дельфин)", lat: 25.03, lng: -77.39, info: "Bottlenose Dolphin • Active" },
+                    { name: "Catalina (Акула)", lat: 24.55, lng: -81.78, info: "Great White Shark • PRO" }
+                ];
 
-        animals.forEach(function(animal) {
-            L.marker([animal.lat, animal.lng]).addTo(map).bindPopup('<b>' + animal.name + '</b><br>' + animal.info);
-        });
+                animals.forEach(function(animal) {
+                    L.marker([animal.lat, animal.lng]).addTo(map).bindPopup('<b>' + animal.name + '</b><br>' + animal.info);
+                });
+            } else {
+                map.invalidateSize();
+            }
+        }
+
+        // Запуск при старте
+        window.onload = function() {
+            initMap();
+        };
 
         function switchScreen(screenId, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('screen-' + screenId).classList.add('active');
             el.classList.add('active');
-            if(screenId === 'map') { setTimeout(() => { map.invalidateSize(); }, 200); }
+            
+            if(screenId === 'map') { 
+                setTimeout(() => { initMap(); }, 100); 
+            }
         }
     </script>
 </body>
 </html>
+
