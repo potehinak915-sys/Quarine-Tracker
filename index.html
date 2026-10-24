@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarine Tracker</title>
+    <!-- Бесплатная интерактивная карта -->
+    <link rel="stylesheet" href="https://unpkg.com" />
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f0f4f5; }
+        header { background: linear-gradient(135deg, #00a896, #028090); color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        #map { height: 45vh; width: 100%; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+        .info-container { padding: 20px; }
+        .animal-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #00a896; }
+        .animal-name { font-weight: bold; font-size: 18px; color: #028090; }
+        .animal-coords { font-size: 14px; color: #666; margin-top: 4px; }
+        .badge { background: #e0f2f1; color: #00a896; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>🐋 Quarine Tracker</header>
+    <div id="map"></div>
+
+    <div class="info-container">
+        <h3>Отслеживаемые животные</h3>
+        
+        <div class="animal-card">
+            <div>
+                <div class="animal-name">Alpha (Кит)</div>
+                <div class="animal-coords">Широта: 25.76, Долгота: -80.19</div>
+            </div>
+            <span class="badge">Майами</span>
+        </div>
+
+        <div class="animal-card">
+            <div>
+                <div class="animal-name">Echo (Дельфин)</div>
+                <div class="animal-coords">Широта: 25.03, Долгота: -77.39</div>
+            </div>
+            <span class="badge">Багамы</span>
+        </div>
+
+        <div class="animal-card">
+            <div>
+                <div class="animal-name">Catalina (Акула)</div>
+                <div class="animal-coords">Широта: 24.55, Долгота: -81.78</div>
+            </div>
+            <span class="badge">Ки-Уэст</span>
+        </div>
+    </div>
+
+    <!-- Запуск скриптов карты Leaflet -->
+    <script src="https://unpkg.com"></script>
+    <script>
+        var map = L.map('map').setView([25.2, -79.5], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var animals = [
+            { name: "Alpha (Кит)", lat: 25.76, lng: -80.19, info: "Замечен у побережья Майами" },
+            { name: "Echo (Дельфин)", lat: 25.03, lng: -77.39, info: "Кружит около Багамских островов" },
+            { name: "Catalina (Акула)", lat: 24.55, lng: -81.78, info: "Двигается на юг от Ки-Уэст" }
+        ];
+
+        animals.forEach(function(animal) {
+            L.marker([animal.lat, animal.lng]).addTo(map)
+                .bindPopup('<b>' + animal.name + '</b><br>' + animal.info);
+        });
+    </script>
+</body>
+</html>
