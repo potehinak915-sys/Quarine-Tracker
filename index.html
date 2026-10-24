@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Quarine Tracker Pro</title>
-    <link rel="stylesheet" href="https://unpkg.com" />
     <style>
         body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f8f9fa; height: 100vh; display: flex; flex-direction: column; }
         header { background: white; color: #333; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; border-bottom: 1px solid #eee; display: flex; justify-content: center; align-items: center; gap: 8px; }
@@ -13,7 +12,9 @@
         .screen { flex: 1; display: none; overflow-y: auto; padding-bottom: 70px; height: calc(100vh - 120px); }
         .screen.active { display: block; }
         
-        #map { height: 50vh; width: 100%; min-height: 300px; background: #ccd7d9; }
+        /* Контейнер для Google Карты */
+        .map-container { width: 100%; height: 50vh; min-height: 300px; background: #e0eced; border: none; margin: 0; padding: 0; }
+        .map-container iframe { width: 100%; height: 100%; border: 0; }
         
         .section-title { font-size: 22px; font-weight: bold; padding: 20px 15px 10px 15px; margin: 0; color: #111; }
         .search-bar { margin: 10px 15px; padding: 12px; background: #eee; border-radius: 10px; color: #777; font-size: 14px; }
@@ -46,15 +47,18 @@
 
     <header><span>🐳</span> Quarine Tracker</header>
 
-    <!-- ЭКРАН 1: КАРТА -->
+    <!-- ЭКРАН 1: КАРТА GOOGLE -->
     <div id="screen-map" class="screen active">
-        <div id="map"></div>
+        <div class="map-container">
+            <!-- Подключаем реальную спутниковую карту Google региона Флорида-Багамы -->
+            <iframe src="https://google.com" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
         <div class="animal-list" style="margin-top: 15px;">
             <div class="animal-item">
-                <div class="animal-info"><span class="animal-name">Alpha</span><span class="animal-sub">Humpback Whale • Active</span></div>
+                <div class="animal-info"><span class="animal-name">Alpha</span><span class="animal-sub">Humpback Whale • Active (Miami)</span></div>
             </div>
             <div class="animal-item">
-                <div class="animal-info"><span class="animal-name">Echo</span><span class="animal-sub">Bottlenose Dolphin • Active</span></div>
+                <div class="animal-info"><span class="animal-name">Echo</span><span class="animal-sub">Bottlenose Dolphin • Active (Bahamas)</span></div>
             </div>
             <div class="animal-item">
                 <div class="animal-info"><span class="animal-name">Catalina</span><span class="animal-sub">Great White Shark • Silent...</span></div>
@@ -127,49 +131,14 @@
         <div class="nav-item" onclick="switchScreen('account', this)"><span class="nav-icon">👤</span>Account</div>
     </nav>
 
-    <script src="https://unpkg.com"></script>
     <script>
-        var map;
-        
-        function initMap() {
-            if (!map) {
-                map = L.map('map').setView([25.2, -79.5], 6);
-                
-                // Переключаем на сверхустойчивый слой CartoDB Voyager
-                L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
-                    attribution: '© OpenStreetMap © CartoDB',
-                    subdomains: 'abcd',
-                    maxZoom: 20
-                }).addTo(map);
-
-                var animals = [
-                    { name: "Alpha (Кит)", lat: 25.76, lng: -80.19, info: "Humpback Whale • Active" },
-                    { name: "Echo (Дельфин)", lat: 25.03, lng: -77.39, info: "Bottlenose Dolphin • Active" },
-                    { name: "Catalina (Акула)", lat: 24.55, lng: -81.78, info: "Great White Shark • PRO" }
-                ];
-
-                animals.forEach(function(animal) {
-                    L.marker([animal.lat, animal.lng]).addTo(map).bindPopup('<b>' + animal.name + '</b><br>' + animal.info);
-                });
-            } else {
-                map.invalidateSize();
-            }
-        }
-
-        window.onload = function() {
-            initMap();
-        };
-
         function switchScreen(screenId, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('screen-' + screenId).classList.add('active');
             el.classList.add('active');
-            
-            if(screenId === 'map') { 
-                setTimeout(() => { initMap(); }, 100); 
-            }
         }
     </script>
 </body>
 </html>
+
